@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using DevExpress.ExpressApp;
-using DevExpress.ExpressApp.ConditionalAppearance;
-using DevExpress.ExpressApp.Validation;
+using Xpand.ExpressApp.Security.Controllers;
 using Xpand.ExpressApp.Security.Registration;
 using Xpand.Persistent.Base.General;
 using Xpand.Persistent.Base.Security;
 using Xpand.Persistent.Base.Validation;
+using ChooseDatabaseAtLogonController = Xpand.ExpressApp.Security.Controllers.ChooseDatabaseAtLogonController;
 
 namespace Xpand.ExpressApp.Security {
     public abstract class XpandSecurityModuleBase:XpandModuleBase {
@@ -23,11 +23,18 @@ namespace Xpand.ExpressApp.Security {
         private void application_CreateCustomLogonWindowControllers(object sender, CreateCustomLogonWindowControllersEventArgs e) {
             if (((IModelOptionsRegistration) Application.Model.Options).Registration.Enabled)
                 AddRegistrationControllers(sender, e);
+            if (((IModelOptionsChooseDatabaseAtLogon) Application.Model.Options).ChooseDatabaseAtLogon){
+                e.Controllers.Add(Application.CreateController<ChooseDatabaseAtLogonController>());
+                e.Controllers.AddRange(Application.CreateAppearenceControllers());
+                e.Controllers.AddRange(Application.CreateValidationControllers());
+            }
         }
 
         protected virtual void AddRegistrationControllers(object sender, CreateCustomLogonWindowControllersEventArgs e) {
             var app = (XafApplication) sender;
             e.Controllers.AddRange(CreateRegistrationControllers(app));
+            e.Controllers.AddRange(app.CreateAppearenceControllers());
+            e.Controllers.AddRange(app.CreateValidationControllers());
         }
 
         public static IEnumerable<Controller> CreateRegistrationControllers(XafApplication app) {
@@ -35,19 +42,7 @@ namespace Xpand.ExpressApp.Security {
             if (typeInfo != null)
                 yield return app.CreateController(typeInfo.Type);
 
-            yield return app.CreateController<ActionAppearanceController>();
-            yield return app.CreateController<AppearanceController>();
-            yield return app.CreateController<DetailViewItemAppearanceController>();
-            yield return app.CreateController<DetailViewLayoutItemAppearanceController>();
-            yield return app.CreateController<RefreshAppearanceController>();
-            yield return app.CreateController<AppearanceCustomizationListenerController>();
-
             yield return app.CreateController<ManageUsersOnLogonController>();
-
-            yield return app.CreateController<ActionValidationController>();
-            yield return app.CreateController<PersistenceValidationController>();
-            yield return app.CreateController<ResultsHighlightController>();
-            yield return app.CreateController<RuleSetInitializationController>();
         }
     }
 }
