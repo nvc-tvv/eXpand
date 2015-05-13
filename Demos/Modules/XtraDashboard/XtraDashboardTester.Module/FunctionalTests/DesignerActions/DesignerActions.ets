@@ -1,13 +1,5 @@
-#DropDB XtraDashboardTesterEasyTest
-#Application XtraDashboardTester.Win
-*ScreenCapture
-*Action Log On
-*Action Navigation(Reports.Dashboard Definition)
+#IncludeFile .\Init.inc
 
-*Action Dashboard Edit
-*Sleep 5000
-*XpandHandleDialog
- Caption = Dashboard Designer
- Close = True
+#IncludeFile .\EditExisting.inc
 
-
+#IncludedFile .\CreateNew.inc
