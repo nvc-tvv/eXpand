@@ -257,13 +257,16 @@
 	<MSBuild Projects="@(EasyProjects)" Targets="Build" Properties="Configuration=EasyTest" />
     <CallTarget Targets="FCWebDbUpdater" Condition="'$(FCWebDbUpdater)'==''" />
   </Target>
-  <Target Name="RunEasyTests">
-	<CallTarget Targets='BuildEasyTest' ></CallTarget>
-    <Delete Files="@(EasyTestLogs)"/>	
-    <CreateItem Include="@(EasyTestReqs)" AdditionalMetadata="CopiedToDir=%(EasyTests.RelativeDir);" >
+  <Target Name="CopyEasyTestReqs">
+	<CreateItem Include="@(EasyTestReqs)" AdditionalMetadata="CopiedToDir=%(EasyTests.RelativeDir);" >
       <Output ItemName="EasyTestReqsToDelete" TaskParameter="Include"/>
     </CreateItem>
     <Copy SourceFiles="@(EasytestReqs)" DestinationFolder="%(EasyTests.RelativeDir)"/>
+  </Target>
+  <Target Name="RunEasyTests">
+	<CallTarget Targets='BuildEasyTest' ></CallTarget>
+    <Delete Files="@(EasyTestLogs)"/>	
+    <CallTarget Targets="CopyEasyTestReqs"/>
     <WriteLinesToFile File="$(XpandDLLPath)\easytests.txt" Lines="@(EasyTests)" Overwrite="true"></WriteLinesToFile>
     <Exec Command="$(XpandDLLPath)\XpandTestExecutor.Win.exe easytests.txt" WorkingDirectory="$(XpandDLLPath)" />
 	<Delete Files="%(EasyTestReqsToDelete.CopiedToDir)%(EasyTestReqsToDelete.Filename)%(EasyTestReqsToDelete.Extension)"/>
