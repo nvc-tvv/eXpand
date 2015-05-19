@@ -1,4 +1,4 @@
-﻿#IncludeFile .\Init.inc
+﻿;#IncludeFile .\Init.inc
 
 *Action Navigation(Reports.Dashboard Definition)
 *Action New(Dashboard Definition)
