@@ -22,3 +22,7 @@
 *Action View Edit Mode
 !FillForm
  Name = View
+!ActionVisible Save
+!ActionVisible SaveAndClose
+!ActionVisible Cancel
+!ActionVisible Refresh

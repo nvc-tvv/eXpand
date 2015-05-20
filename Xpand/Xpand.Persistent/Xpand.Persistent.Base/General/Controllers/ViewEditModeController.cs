@@ -4,6 +4,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.ExpressApp.Editors;
 using DevExpress.ExpressApp.Model;
+using DevExpress.ExpressApp.SystemModule;
 using Xpand.Persistent.Base.General.Model;
 
 namespace Xpand.Persistent.Base.General.Controllers {
@@ -63,8 +64,14 @@ namespace Xpand.Persistent.Base.General.Controllers {
         }
 
         protected virtual void UpdateViewAllowEditState(DetailView view) {
-            if (!ApplicationHelper.Instance.Application.IsHosted())
+            if (!ApplicationHelper.Instance.Application.IsHosted()){
                 view.AllowEdit["ViewEditMode"] = view.ViewEditMode == ViewEditMode.Edit;
+                var modificationsController = Frame.GetController<ModificationsController>();
+                modificationsController.SaveAction.Active[typeof(ViewEditModeController).Name] = false;
+                modificationsController.SaveAndCloseAction.Active[typeof(ViewEditModeController).Name] = false;
+                modificationsController.CancelAction.Active[typeof(ViewEditModeController).Name] = false;
+                Frame.GetController<RefreshController>().RefreshAction.Active[typeof (ViewEditModeController).Name]=false;
+            }
         }
 
         void IModelExtender.ExtendModelInterfaces(ModelInterfaceExtenders extenders) {
